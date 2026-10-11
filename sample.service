@@ -1,0 +1,33 @@
+# service v1
+---
+api_base: https://api.example.local
+timeout: 5
+robot_id: optimus-01
+---
+
+SERVICE: status
+LOCAL: ./local/status.json
+API: /v1/status
+METHOD: GET
+CACHE: ./cache/status.json
+PRECHECK: fresh:60
+FALLBACK: use_cache
+NOTES: check local freshness before remote status poll
+
+SERVICE: inventory
+LOCAL: ./local/inventory.yaml
+API: /v1/inventory
+METHOD: GET
+CACHE: ./cache/inventory.yaml
+PRECHECK: exists
+FALLBACK: call_api
+NOTES: only call if local inventory file is missing
+
+SERVICE: command
+LOCAL: ./local/pending.cmd
+API: /v1/command
+METHOD: POST
+CACHE: ./cache/last_command.json
+PRECHECK: match:pending
+FALLBACK: skip
+NOTES: submit only when local pending flag is present

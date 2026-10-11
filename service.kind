@@ -1,0 +1,48 @@
+---
+kind: service
+ext: .service
+version: 1
+mime: application/x-service
+binary: false
+trigger: service file type robot local check api precheck
+---
+
+## Purpose
+
+Text format for robots to organize local pre-checks, cache locations, and conditions that must be evaluated before calling a remote API. Enables offline-first decisions, local status organization, and structured service manifests that a robot can consult without network access.
+
+## Structure
+
+1. First line is the magic banner `# service v1`
+2. Optional YAML frontmatter between `---` fences for defaults (api_base, timeout, robot_id)
+3. Body contains one or more service entries separated by blank lines
+4. Each entry begins with `SERVICE: <name>`
+5. Subsequent non-comment lines are `KEY: value` pairs belonging to that service until the next blank line or SERVICE
+6. Allowed keys: LOCAL, API, METHOD, CACHE, PRECHECK, FALLBACK, NOTES
+7. Comments start with `#`. Blank lines separate entries.
+
+## Parse rules
+
+- Reject the file if line 1 is not `# service v1`
+- Skip optional frontmatter after the banner
+- Group lines into entries: a new entry starts at each `SERVICE: ` line
+- Within an entry, split each line on the first `: ` into key and value
+- Keys are uppercase. Unknown keys are stored but ignored for decisions
+- PRECHECK values are simple expressions: `exists`, `missing`, `fresh:N` (seconds), `match:pattern`, or `always`
+- LOCAL and CACHE values are filesystem paths relative to the robot's workspace
+- Duplicate SERVICE names: last entry wins
+- Ignore lines that do not contain `: `
+
+## Write rules
+
+- Always start with `# service v1`
+- Place optional frontmatter immediately after the banner
+- One service entry per logical unit; separate with a blank line
+- Use only the allowed keys listed in Structure
+- Paths must be relative; no absolute paths or network URLs in LOCAL/CACHE
+- Values must not contain newlines
+- Prefer short PRECHECK expressions that a robot can evaluate with local filesystem calls only
+
+## Example
+
+See sample.service
