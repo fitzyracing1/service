@@ -33,3 +33,8 @@ A plain-text `.service` file lets a robot keep a local, offline-readable manifes
 ## Declaration
 
 See `service.kind` for the full kind specification (structure, parse rules, write rules).
+
+## Documentation
+
+- In-repo docs: [docs/](docs/index.md)
+- Wiki: [https://github.com/fitzyracing1/service/wiki](https://github.com/fitzyracing1/service/wiki)
